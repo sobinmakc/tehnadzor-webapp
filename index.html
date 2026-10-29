@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TehnadzorAI — Технадзор</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: var(--tg-theme-bg-color, #181818); color: var(--tg-theme-text-color, #ffffff); margin: 0; padding: 15px; }
+        .container { max-width: 500px; margin: auto; }
+        h2 { text-align: center; color: #ffc107; font-size: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; margin-bottom: 5px; color: #aaa; }
+        select, input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: #fff; font-size: 14px; box-sizing: border-box; }
+        textarea { resize: vertical; height: 90px; }
+        button { width: 100%; background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #218838; }
+    .card { background: #222; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>👷‍♂️ Мобильный Технадзор</h2>
+        <div class="card">
+            <div class="form-group">
+                <label>Объект / Блок:</label>
+                <select id="objectSelect">
+                    <option value="МЖК ЗОРСАН - Блок 1">МЖК ЗОРСАН - Блок 1</option>
+                    <option value="МЖК ЗОРСАН - Блок 7">МЖК ЗОРСАН - Блок 7</option>
+                    <option value="МЖК ЗОРСАН - Блок 10">МЖК ЗОРСАН - Блок 10</option>
+                    <option value="МЖК ЗОРСАН - Блок 14">МЖК ЗОРСАН - Блок 14</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Место / Этаж / Оси:</label>
+                <input type="text" id="locationInput" placeholder="Например: Этаж 5, ося 3-4, кв. 42">
+            </div>
+            <div class="form-group">
+                <label>Описание замечания / Нарушения:</label>
+                <textarea id="noticeText" placeholder="Укажите суть нарушения по ШНК / СП..."></textarea>
+            </div>
+            <button onclick="sendNotice()">📄 Создать предписание Word</button>
+        </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function sendNotice() {
+            let obj = document.getElementById('objectSelect').value;
+            let loc = document.getElementById('locationInput').value;
+            let text = document.getElementById('noticeText').value;
+
+            if (!text) {
+                alert('Пожалуйста, заполните описание замечания!');
+                return;
+            }
+
+            let data = {
+                object: obj,
+                location: loc,
+                text: text,
+                user: tg.initDataUnsafe?.user?.first_name || "Инженер"
+            };
+
+            // Отправляем данные боту в чат через WebApp
+            tg.sendData(JSON.stringify(data));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
